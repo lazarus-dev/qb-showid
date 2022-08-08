@@ -1,14 +1,16 @@
-fx_version 'adamant'
+fx_version 'cerulean'
 game 'gta5'
-description 'QBcore ShowID'
+
+description 'QBCore ShowID over player heads while pressing a configured key. It will play an animation while key is pressed.'
+
 version '1.0.0'
 
 client_scripts {
     'config.lua',
-    'client/c.lua'
+    'client/main.lua'
 }
 
 server_scripts {
     'config.lua',
-    'server/s.lua'
+    'server/main.lua'
 }
