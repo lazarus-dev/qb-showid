@@ -2,6 +2,7 @@ local QBCore =  exports['qb-core']:GetCoreObject()
 
 local forceDraw = false
 local shouldDraw = false
+local nearbyPlayers = nil
 
 RegisterNetEvent('qb-showid:id', function()
     forceDraw = not forceDraw
@@ -14,24 +15,40 @@ local function loadAnimDict(dict)
     end
 end
 
---Test Inputs
 CreateThread(function()
     while true do
-        Wait(10)
+        Wait(2000)
+
+        nearbyPlayers = GetNeareastPlayers()
+    end
+end)
+
+CreateThread(function()
+    while true do
+        Wait(1)
 
         if Config.Key.Enabled then
             shouldDraw = IsControlPressed(0, Config.Key.Code)
         end
+
+        if shouldDraw or forceDraw then            
+            if nearbyPlayers ~= nil then
+                for _, v in pairs(nearbyPlayers) do
+                    local x, y, z = table.unpack(v.coords)
+                    Draw3DText(x, y, z + 1.1, v.playerId)
+                end
+            end
+        end
     end
 end)
 
---Draw Things
 CreateThread(function()
     local animationState = false
     local clipboardEntity
 
     while true do
-        Wait(0)
+        Wait(100)
+
         if animationState ~= shouldDraw then
             animationState = shouldDraw
 
@@ -41,7 +58,7 @@ CreateThread(function()
                 loadAnimDict("missheistdockssetup1clipboard@base")
                 TaskPlayAnim(playerPed, 'missheistdockssetup1clipboard@base', 'base', 8.0, -8, -1, 49, 0, 0, 0, 0)
 
-                clipboardEntity = CreateObject(GetHashKey("p_amb_clipboard_01"), x, y, z, true)        
+                clipboardEntity = CreateObject(GetHashKey("p_amb_clipboard_01"), x, y, z, true)
 
                 AttachEntityToEntity(clipboardEntity, GetPlayerPed(-1), GetPedBoneIndex(GetPlayerPed(PlayerId()), 18905), Config.Coords.x, Config.Coords.y, Config.Coords.z, Config.Rotation.x, Config.Rotation.y, Config.Rotation.z, 1, 1, 0, 1, 0, 1)
             else
@@ -51,14 +68,6 @@ CreateThread(function()
                     DeleteEntity(clipboardEntity)
                     clipboardEntity = nil
                 end
-            end
-        end
-
-        if shouldDraw or forceDraw then
-            local nearbyPlayers = GetNeareastPlayers()
-            for k, v in pairs(nearbyPlayers) do
-                local x, y, z = table.unpack(v.coords)
-                Draw3DText(x, y, z + 1.1, v.playerId)
             end
         end
     end

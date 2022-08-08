@@ -10,4 +10,5 @@ Config.Rotation = vector3(-80.0, -20.0, 0.0)
 Config.Key = {
     Enabled = true,
     Code = 344,
+    Name = 'F11'
 }
